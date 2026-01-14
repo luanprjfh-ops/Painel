@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel Admin • Completo</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f1731; --card:#101a33; --muted:#93a4c7; --text:#eaf0ff;
+      --pri:#3b82f6; --pri2:#60a5fa; --danger:#ef4444; --warn:#f59e0b; --ok:#22c55e;
+      --br:18px;
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{margin:0;background:radial-gradient(900px 500px at 20% 10%, rgba(59,130,246,.22), transparent 60%), var(--bg); color:var(--text)}
+    .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+    aside{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-right:1px solid rgba(255,255,255,.08); padding:16px}
+    .brand{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .brand h1{font-size:14px;margin:0;letter-spacing:.4px}
+    .pill{font-size:11px;color:var(--muted);border:1px solid rgba(255,255,255,.10);padding:6px 10px;border-radius:999px}
+    nav{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+    .navbtn{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);background:rgba(16,26,51,.55);cursor:pointer;color:var(--text)}
+    .navbtn:hover{border-color:rgba(96,165,250,.40);background:rgba(16,26,51,.75)}
+    .navbtn.active{border-color:rgba(59,130,246,.75);box-shadow:0 0 0 4px rgba(59,130,246,.14)}
+    .navbtn small{color:var(--muted)}
+    .spacer{height:10px}
+    .logout{margin-top:auto;background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35)}
+    main{padding:18px}
+    header{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
+    header h2{margin:0;font-size:18px}
+    .toprow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .chip{border:1px solid rgba(255,255,255,.10);background:rgba(16,26,51,.55);border-radius:999px;padding:8px 10px;font-size:12px;color:var(--muted)}
+    .chip b{color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.08);border-radius:var(--br);padding:14px;box-shadow:0 10px 34px rgba(0,0,0,.28)}
+    .card h3{margin:0 0 10px;font-size:14px}
+    .muted{color:var(--muted)}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap}
+    .kpi .item{flex:1;min-width:180px}
+    .val{font-size:20px;font-weight:750}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    input,select,textarea{padding:10px 10px;border-radius:14px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(16,26,51,.60);color:var(--text);outline:none}
+    input:focus,select:focus,textarea:focus{border-color:rgba(96,165,250,.55);box-shadow:0 0 0 4px rgba(59,130,246,.14)}
+    textarea{min-height:80px;resize:vertical}
+    button{padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(59,130,246,.95);
+      color:white;font-weight:650;cursor:pointer}
+    button.secondary{background:rgba(255,255,255,.06);color:var(--text)}
+    button.danger{background:rgba(239,68,68,.92)}
+    button.warn{background:rgba(245,158,11,.92)}
+    button.ok{background:rgba(34,197,94,.92)}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    th{font-size:12px;color:var(--muted);text-align:left;padding:0 10px}
+    td{background:rgba(16,26,51,.55);border:1px solid rgba(255,255,255,.08);padding:10px;border-left:none;border-right:none}
+    tr td:first-child{border-left:1px solid rgba(255,255,255,.08);border-top-left-radius:12px;border-bottom-left-radius:12px}
+    tr td:last-child{border-right:1px solid rgba(255,255,255,.08);border-top-right-radius:12px;border-bottom-right-radius:12px}
+    .tag{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);font-size:12px}
+    .tag.ok{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.12)}
+    .tag.warn{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.12)}
+    .tag.danger{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.12)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .two{grid-column:span 6}
+    .four{grid-column:span 4}
+    .eight{grid-column:span 8}
+    .twelve{grid-column:span 12}
+    .hidden{display:none}
+    .note{font-size:12px;color:var(--muted);line-height:1.4}
+    .hr{height:1px;background:rgba(255,255,255,.08);margin:12px 0}
+    @media (max-width: 980px){
+      .app{grid-template-columns:1fr}
+      aside{position:sticky;top:0;z-index:2}
+      main{padding:14px}
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <h1>Painel Admin</h1>
+      <div class="pill" id="userPill">offline</div>
+    </div>
+    <div class="note">Controle de clientes, mensalidades, financeiro PJ, agenda e projetos (Supabase + GitHub Pages).</div>
+    <nav>
+      <button class="navbtn active" data-view="dashboard">Dashboard <small>resumo do mês</small></button>
+      <button class="navbtn" data-view="clients">Clientes <small>cadastro + WhatsApp</small></button>
+      <button class="navbtn" data-view="invoices">Mensalidades <small>pagos/aberto/atraso</small></button>
+      <button class="navbtn" data-view="finance">Financeiro PJ <small>receitas/despesas</small></button>
+      <button class="navbtn" data-view="agenda">Agenda <small>tarefas do dia</small></button>
+      <button class="navbtn" data-view="projects">Projetos <small>pipeline</small></button>
+      <div class="spacer"></div>
+      <button class="navbtn logout" id="btnLogout">Sair</button>
+    </nav>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <h2 id="title">Dashboard</h2>
+        <div class="muted" id="subtitle">Visão geral de faturamento e pendências.</div>
+      </div>
+      <div class="toprow">
+        <div class="chip">Hoje: <b id="today"></b></div>
+        <div class="chip">Competência: <b id="competency"></b></div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="grid">
+      <div class="card twelve">
+        <h3>Indicadores do mês</h3>
+        <div class="kpi">
+          <div class="item">
+            <div class="muted">Recebido no mês</div>
+            <div class="val" id="kpiReceived">R$ 0,00</div>
+          </div>
+          <div class="item">
+            <div class="muted">Previsto do mês (a receber)</div>
+            <div class="val" id="kpiExpected">R$ 0,00</div>
+          </div>
+          <div class="item">
+            <div class="muted">Em aberto</div>
+            <div class="val" id="kpiOpen">R$ 0,00</div>
+          </div>
+          <div class="item">
+            <div class="muted">Atrasado</div>
+            <div class="val" id="kpiLate">R$ 0,00</div>
+          </div>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <button id="btnRefreshDash" class="secondary">Atualizar</button>
+          <button id="btnGoInvoices">Ver Mensalidades</button>
+        </div>
+        <div class="note" id="dashNote"></div>
+      </div>
+
+      <div class="card six twelve" style="grid-column:span 6">
+        <h3>Próximos vencimentos (7 dias)</h3>
+        <div id="nextDue" class="note">Carregando...</div>
+      </div>
+
+      <div class="card six twelve" style="grid-column:span 6">
+        <h3>Em atraso (ação rápida)</h3>
+        <div id="lateList" class="note">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section id="view-clients" class="grid hidden">
+      <div class="card twelve">
+        <h3>Novo cliente / editar</h3>
+        <div class="row">
+          <input id="c_company" placeholder="Empresa *" style="min-width:220px;flex:2" />
+          <input id="c_resp" placeholder="Responsável" style="min-width:200px;flex:2" />
+          <input id="c_phone" placeholder="Telefone (DDI+DDD+Número) ex: 5596999998888" style="min-width:260px;flex:2" />
+          <input id="c_email" placeholder="E-mail" style="min-width:220px;flex:2" />
+          <select id="c_status" style="min-width:140px;flex:1">
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+          </select>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <input id="c_monthly" type="number" step="0.01" placeholder="Mensalidade (R$)" style="min-width:160px;flex:1" />
+          <input id="c_due_day" type="number" min="1" max="28" placeholder="Dia venc. (1-28)" style="min-width:160px;flex:1" />
+          <select id="c_sub_active" style="min-width:160px;flex:1">
+            <option value="true">Assinatura ativa</option>
+            <option value="false">Assinatura desativada</option>
+          </select>
+          <button id="btnSaveClient">Salvar</button>
+          <button id="btnClearClient" class="secondary">Limpar</button>
+        </div>
+        <div style="margin-top:10px">
+          <textarea id="c_notes" placeholder="Observações do cliente..."></textarea>
+        </div>
+        <div class="note" id="clientsMsg"></div>
+      </div>
+
+      <div class="card twelve">
+        <h3>Lista de clientes</h3>
+        <div class="row">
+          <input id="clientsSearch" placeholder="Buscar por empresa / responsável / telefone" style="flex:2;min-width:240px" />
+          <select id="clientsFilter" style="min-width:160px">
+            <option value="todos">Todos</option>
+            <option value="ativo">Somente ativos</option>
+            <option value="inativo">Somente inativos</option>
+          </select>
+          <button id="btnLoadClients" class="secondary">Atualizar lista</button>
+        </div>
+        <div style="margin-top:10px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Responsável</th>
+                <th>Telefone</th>
+                <th>Status</th>
+                <th>Mensalidade</th>
+                <th>Venc.</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENSALIDADES -->
+    <section id="view-invoices" class="grid hidden">
+      <div class="card twelve">
+        <h3>Mensalidades</h3>
+        <div class="row">
+          <input id="invCompetency" placeholder="Competência YYYY-MM" style="min-width:180px" />
+          <button id="btnEnsureInvoices" class="secondary">Gerar/Atualizar mês</button>
+          <button id="btnLoadInvoices">Carregar</button>
+        </div>
+        <div class="note" id="invMsg"></div>
+        <div class="hr"></div>
+        <div class="row">
+          <div class="chip">Recebido: <b id="invReceived">R$ 0,00</b></div>
+          <div class="chip">Previsto: <b id="invExpected">R$ 0,00</b></div>
+          <div class="chip">Em aberto: <b id="invOpen">R$ 0,00</b></div>
+          <div class="chip">Atrasado: <b id="invLate">R$ 0,00</b></div>
+        </div>
+      </div>
+
+      <div class="card twelve">
+        <h3>Lista do mês</h3>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Venc.</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Pago em</th>
+                <th>Método</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="invTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINANCEIRO -->
+    <section id="view-finance" class="grid hidden">
+      <div class="card twelve">
+        <h3>Financeiro PJ</h3>
+        <div class="row">
+          <input id="finDate" type="date" />
+          <select id="finType">
+            <option value="receita">Receita</option>
+            <option value="despesa">Despesa</option>
+          </select>
+          <input id="finCategory" placeholder="Categoria (ex: anuncios, hospedagem)" style="min-width:240px;flex:2" />
+          <input id="finDesc" placeholder="Descrição *" style="min-width:260px;flex:3" />
+          <input id="finAmount" type="number" step="0.01" placeholder="Valor (R$)" style="min-width:160px" />
+          <button id="btnAddFinance">Adicionar</button>
+          <button id="btnLoadFinance" class="secondary">Atualizar</button>
+        </div>
+        <div class="note" id="finMsg"></div>
+        <div class="hr"></div>
+        <div class="row">
+          <div class="chip">Receitas mês: <b id="finKpiIn">R$ 0,00</b></div>
+          <div class="chip">Despesas mês: <b id="finKpiOut">R$ 0,00</b></div>
+          <div class="chip">Resultado mês: <b id="finKpiNet">R$ 0,00</b></div>
+        </div>
+      </div>
+
+      <div class="card twelve">
+        <h3>Lançamentos</h3>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="finTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGENDA -->
+    <section id="view-agenda" class="grid hidden">
+      <div class="card twelve">
+        <h3>Agenda</h3>
+        <div class="row">
+          <input id="agDate" type="date" />
+          <input id="agTime" placeholder="Hora (opcional) ex: 14:30" style="min-width:180px" />
+          <input id="agTitle" placeholder="Título *" style="min-width:260px;flex:3" />
+          <select id="agPriority">
+            <option value="alta">Alta</option>
+            <option value="media" selected>Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+          <input id="agType" placeholder="Tipo (cobrança, reunião, entrega...)" style="min-width:240px;flex:2" />
+          <button id="btnAddAgenda">Adicionar</button>
+          <button id="btnLoadAgenda" class="secondary">Atualizar</button>
+        </div>
+        <div style="margin-top:10px">
+          <textarea id="agNotes" placeholder="Observações..."></textarea>
+        </div>
+        <div class="note" id="agMsg"></div>
+      </div>
+
+      <div class="card twelve">
+        <h3>Itens</h3>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Título</th>
+                <th>Prioridade</th>
+                <th>Tipo</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="agTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJETOS -->
+    <section id="view-projects" class="grid hidden">
+      <div class="card twelve">
+        <h3>Projetos</h3>
+        <div class="row">
+          <input id="prName" placeholder="Nome do projeto *" style="min-width:260px;flex:3" />
+          <input id="prValue" type="number" step="0.01" placeholder="Valor (R$)" style="min-width:160px" />
+          <input id="prDeadline" type="date" />
+          <select id="prStatus">
+            <option value="proposta">Proposta</option>
+            <option value="em_andamento" selected>Em andamento</option>
+            <option value="em_validacao">Em validação</option>
+            <option value="entregue">Entregue</option>
+            <option value="pausado">Pausado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+          <select id="prClient" style="min-width:220px;flex:2"></select>
+          <button id="btnAddProject">Adicionar</button>
+          <button id="btnLoadProjects" class="secondary">Atualizar</button>
+        </div>
+        <div style="margin-top:10px">
+          <textarea id="prDesc" placeholder="Descrição do projeto..."></textarea>
+        </div>
+        <div class="note" id="prMsg"></div>
+      </div>
+
+      <div class="card twelve">
+        <h3>Lista</h3>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Projeto</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Prazo</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="prTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+  // ========= CONFIGURE AQUI =========
+  const SUPABASE_URL = "https://qygouivoecftqwpwubwc.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_QThZVWJcyjHd0vT9P7OQXw_hrwsSx4Y";
+  // ================================
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const $ = (id) => document.getElementById(id);
+  const fmtBRL = (n) => (Number(n||0)).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  const todayISO = () => new Date().toISOString().slice(0,10);
+  const now = new Date();
+  const currentCompetency = () => `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+  const parseCompetency = (c) => {
+    const [y,m] = c.split("-").map(Number);
+    if (!y || !m || m<1 || m>12) return null;
+    return {y,m};
+  };
+  const dueDateFrom = (competency, dueDay) => {
+    const p = parseCompetency(competency); if (!p) return null;
+    const d = String(Math.min(Math.max(Number(dueDay||10),1),28)).padStart(2,"0");
+    return `${p.y}-${String(p.m).padStart(2,"0")}-${d}`;
+  };
+  const statusAuto = (inv) => {
+    if (inv.paid_at) return "pago";
+    const today = todayISO();
+    if (inv.due_date < today) return "atrasado";
+    return "em_aberto";
+  };
+  const whatsappLink = (phone, text="") => {
+    const p = String(phone||"").replace(/\D/g,"");
+    const msg = encodeURIComponent(text||"");
+    return `https://wa.me/${p}${msg ? `?text=${msg}` : ""}`;
+  };
+
+  function setMsg(el, text){ el.textContent = text || ""; }
+
+  // ========= Auth Gate =========
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) location.href = "./login.html";
+
+  $("userPill").textContent = (session?.user?.email || "logado");
+  $("today").textContent = new Date().toLocaleDateString("pt-BR");
+  $("competency").textContent = currentCompetency();
+  $("invCompetency").value = currentCompetency();
+
+  // ========= Navegação =========
+  const views = ["dashboard","clients","invoices","finance","agenda","projects"];
+  const viewTitle = {
+    dashboard:["Dashboard","Visão geral de faturamento e pendências."],
+    clients:["Clientes","Cadastro de empresas, assinatura e WhatsApp direto."],
+    invoices:["Mensalidades","Controle por competência e ações de cobrança."],
+    finance:["Financeiro PJ","Receitas/despesas e resultado mensal."],
+    agenda:["Agenda","Tarefas do dia e acompanhamento."],
+    projects:["Projetos","Pipeline e entregas."]
+  };
+
+  function showView(v){
+    for (const x of views) {
+      $("view-"+x).classList.toggle("hidden", x!==v);
+      document.querySelector(`.navbtn[data-view="${x}"]`)?.classList.toggle("active", x===v);
+    }
+    $("title").textContent = viewTitle[v][0];
+    $("subtitle").textContent = viewTitle[v][1];
+
+    // load on enter
+    if (v==="dashboard") loadDashboard();
+    if (v==="clients") loadClients();
+    if (v==="invoices") loadInvoices(true);
+    if (v==="finance") loadFinance();
+    if (v==="agenda") loadAgenda();
+    if (v==="projects") { loadClientsToProjectSelect(); loadProjects(); }
+  }
+
+  document.querySelectorAll(".navbtn[data-view]").forEach(b=>{
+    b.onclick = () => showView(b.dataset.view);
+  });
+
+  $("btnLogout").onclick = async () => {
+    await supabase.auth.signOut();
+    location.href = "./login.html";
+  };
+
+  $("btnGoInvoices").onclick = () => showView("invoices");
+  $("btnRefreshDash").onclick = () => loadDashboard();
+
+  // ========= CLIENTES =========
+  let editingClientId = null;
+
+  function clearClientForm(){
+    editingClientId = null;
+    $("c_company").value="";
+    $("c_resp").value="";
+    $("c_phone").value="";
+    $("c_email").value="";
+    $("c_status").value="ativo";
+    $("c_notes").value="";
+    $("c_monthly").value="";
+    $("c_due_day").value="10";
+    $("c_sub_active").value="true";
+    setMsg($("clientsMsg"), "");
+  }
+
+  $("btnClearClient").onclick = clearClientForm;
+
+  $("btnSaveClient").onclick = async () => {
+    const company_name = $("c_company").value.trim();
+    if (!company_name) return setMsg($("clientsMsg"), "Informe a empresa (obrigatório).");
+
+    const payload = {
+      owner_id: session.user.id,
+      company_name,
+      responsible_name: $("c_resp").value.trim() || null,
+      phone: $("c_phone").value.trim() || null,
+      email: $("c_email").value.trim() || null,
+      status: $("c_status").value,
+      notes: $("c_notes").value.trim() || null
+    };
+
+    setMsg($("clientsMsg"), "Salvando...");
+
+    let clientId = editingClientId;
+    if (!clientId) {
+      const { data, error } = await supabase.from("clients").insert(payload).select("id").single();
+      if (error) return setMsg($("clientsMsg"), "Erro: " + error.message);
+      clientId = data.id;
+    } else {
+      const { error } = await supabase.from("clients").update(payload).eq("id", clientId);
+      if (error) return setMsg($("clientsMsg"), "Erro: " + error.message);
+    }
+
+    // Upsert subscription
+    const monthly_value = Number($("c_monthly").value || 0);
+    const due_day = Number($("c_due_day").value || 10);
+    const active = $("c_sub_active").value === "true";
+
+    const subPayload = {
+      owner_id: session.user.id,
+      client_id: clientId,
+      monthly_value,
+      due_day,
+      active
+    };
+
+    const { error: subErr } = await supabase.from("subscriptions").upsert(subPayload, { onConflict: "owner_id,client_id" });
+    if (subErr) return setMsg($("clientsMsg"), "Erro mensalidade: " + subErr.message);
+
+    setMsg($("clientsMsg"), "OK. Cliente salvo.");
+    clearClientForm();
+    await loadClients();
+  };
+
+  $("btnLoadClients").onclick = () => loadClients();
+
+  async function loadClients(){
+    const filter = $("clientsFilter").value;
+    const search = $("clientsSearch").value.trim().toLowerCase();
+
+    let q = supabase
+      .from("clients")
+      .select("id,company_name,responsible_name,phone,email,status,notes,created_at, subscriptions(monthly_value,due_day,active)")
+      .order("created_at", { ascending:false });
+
+    if (filter !== "todos") q = q.eq("status", filter);
+
+    const { data, error } = await q;
+    if (error) { setMsg($("clientsMsg"), "Erro: " + error.message); return; }
+
+    const rows = (data||[]).filter(r=>{
+      if (!search) return true;
+      const blob = `${r.company_name||""} ${r.responsible_name||""} ${r.phone||""}`.toLowerCase();
+      return blob.includes(search);
+    });
+
+    const tb = $("clientsTbody");
+    tb.innerHTML = "";
+
+    for (const c of rows){
+      const sub = (c.subscriptions && c.subscriptions[0]) ? c.subscriptions[0] : null;
+      const monthly = sub ? fmtBRL(sub.monthly_value) : fmtBRL(0);
+      const due = sub ? (sub.due_day ?? "-") : "-";
+
+      const phone = c.phone || "";
+      const phoneHtml = phone
+        ? `<a href="${whatsappLink(phone)}" target="_blank" style="color:var(--pri2);text-decoration:none">${phone}</a>`
+        : `<span class="muted">-</span>`;
+
+      const tag = c.status === "ativo"
+        ? `<span class="tag ok">Ativo</span>`
+        : `<span class="tag danger">Inativo</span>`;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${c.company_name}</td>
+        <td>${c.responsible_name||"<span class='muted'>-</span>"}</td>
+        <td>${phoneHtml}</td>
+        <td>${tag}</td>
+        <td>${monthly}</td>
+        <td>${due}</td>
+        <td>
+          <div class="actions">
+            <button class="secondary" data-act="edit">Editar</button>
+            <button class="warn" data-act="toggle">${c.status==="ativo"?"Inativar":"Reativar"}</button>
+            <button class="danger" data-act="del">Excluir</button>
+          </div>
+        </td>
+      `;
+      tr.querySelector('[data-act="edit"]').onclick = async () => {
+        editingClientId = c.id;
+        $("c_company").value = c.company_name || "";
+        $("c_resp").value = c.responsible_name || "";
+        $("c_phone").value = c.phone || "";
+        $("c_email").value = c.email || "";
+        $("c_status").value = c.status || "ativo";
+        $("c_notes").value = c.notes || "";
+        $("c_monthly").value = sub ? (sub.monthly_value ?? 0) : 0;
+        $("c_due_day").value = sub ? (sub.due_day ?? 10) : 10;
+        $("c_sub_active").value = sub ? String(!!sub.active) : "true";
+        setMsg($("clientsMsg"), "Editando cliente: " + (c.company_name||""));
+        window.scrollTo({ top: 0, behavior:"smooth" });
+      };
+      tr.querySelector('[data-act="toggle"]').onclick = async () => {
+        const newStatus = c.status === "ativo" ? "inativo" : "ativo";
+        const { error } = await supabase.from("clients").update({ status:newStatus }).eq("id", c.id);
+        if (error) return setMsg($("clientsMsg"), "Erro: " + error.message);
+        setMsg($("clientsMsg"), "Status alterado para " + newStatus + ".");
+        await loadClients();
+      };
+      tr.querySelector('[data-act="del"]').onclick = async () => {
+        if (!confirm("Excluir este cliente? Isso remove assinatura e pode afetar histórico.")) return;
+        const { error } = await supabase.from("clients").delete().eq("id", c.id);
+        if (error) return setMsg($("clientsMsg"), "Erro: " + error.message);
+        setMsg($("clientsMsg"), "Cliente excluído.");
+        await loadClients();
+      };
+
+      tb.appendChild(tr);
+    }
+  }
+
+  // ========= MENSALIDADES =========
+  $("btnEnsureInvoices").onclick = async () => {
+    const comp = $("invCompetency").value.trim();
+    await ensureInvoicesForMonth(comp);
+    await loadInvoices(true);
+  };
+
+  $("btnLoadInvoices").onclick = async () => loadInvoices(true);
+
+  async function ensureInvoicesForMonth(comp){
+    const p = parseCompetency(comp);
+    if (!p) return setMsg($("invMsg"), "Competência inválida. Use YYYY-MM (ex: 2026-01).");
+
+    setMsg($("invMsg"), "Gerando/atualizando lançamentos do mês...");
+
+    // Pega clientes ativos + subscription ativa
+    const { data, error } = await supabase
+      .from("clients")
+      .select("id,company_name,phone,status, subscriptions(monthly_value,due_day,active)")
+      .eq("status","ativo");
+
+    if (error) return setMsg($("invMsg"), "Erro: " + error.message);
+
+    const list = (data||[]).map(c=>{
+      const sub = c.subscriptions && c.subscriptions[0] ? c.subscriptions[0] : null;
+      return { c, sub };
+    }).filter(x => x.sub && x.sub.active);
+
+    // Para cada cliente, cria invoice se não existir
+    for (const x of list){
+      const due_date = dueDateFrom(comp, x.sub.due_day);
+      const amount = Number(x.sub.monthly_value||0);
+
+      const { data: exists, error: exErr } = await supabase
+        .from("invoices")
+        .select("id")
+        .eq("client_id", x.c.id)
+        .eq("competency", comp)
+        .maybeSingle();
+
+      if (exErr) { setMsg($("invMsg"), "Erro: " + exErr.message); return; }
+
+      if (!exists){
+        const { error: insErr } = await supabase.from("invoices").insert({
+          owner_id: session.user.id,
+          client_id: x.c.id,
+          competency: comp,
+          due_date,
+          amount,
+          status: "em_aberto"
+        });
+        if (insErr) { setMsg($("invMsg"), "Erro: " + insErr.message); return; }
+      }
+    }
+
+    setMsg($("invMsg"), "OK. Mês preparado.");
+  }
+
+  async function loadInvoices(autoEnsure){
+    const comp = $("invCompetency").value.trim() || currentCompetency();
+    $("invCompetency").value = comp;
+
+    if (autoEnsure) await ensureInvoicesForMonth(comp);
+
+    const { data, error } = await supabase
+      .from("invoices")
+      .select("id,client_id,competency,due_date,amount,status,paid_at,payment_method,notes, clients(company_name,phone)")
+      .eq("competency", comp)
+      .order("due_date", { ascending:true });
+
+    if (error) { setMsg($("invMsg"), "Erro: " + error.message); return; }
+
+    // Atualiza status automático se necessário
+    for (const inv of (data||[])){
+      const auto = statusAuto(inv);
+      if (auto !== inv.status){
+        await supabase.from("invoices").update({ status:auto }).eq("id", inv.id);
+        inv.status = auto;
+      }
+    }
+
+    const invs = data || [];
+    let received=0, expected=0, open=0, late=0;
+
+    for (const inv of invs){
+      expected += Number(inv.amount||0);
+      if (inv.status === "pago") received += Number(inv.amount||0);
+      if (inv.status === "em_aberto") open += Number(inv.amount||0);
+      if (inv.status === "atrasado") late += Number(inv.amount||0);
+    }
+
+    $("invReceived").textContent = fmtBRL(received);
+    $("invExpected").textContent = fmtBRL(expected);
+    $("invOpen").textContent = fmtBRL(open);
+    $("invLate").textContent = fmtBRL(late);
+
+    const tb = $("invTbody");
+    tb.innerHTML = "";
+
+    for (const inv of invs){
+      const cname = inv.clients?.company_name || "Cliente";
+      const phone = inv.clients?.phone || "";
+
+      const tag = inv.status==="pago"
+        ? `<span class="tag ok">Pago</span>`
+        : inv.status==="atrasado"
+          ? `<span class="tag danger">Atrasado</span>`
+          : `<span class="tag warn">Em aberto</span>`;
+
+      const paid = inv.paid_at ? new Date(inv.paid_at).toLocaleDateString("pt-BR") : "-";
+      const method = inv.payment_method || "-";
+
+      const msgText = `Olá! Sua mensalidade (${comp}) venceu em ${new Date(inv.due_date+'T00:00:00').toLocaleDateString("pt-BR")} no valor de ${fmtBRL(inv.amount)}. Posso te enviar o PIX para pagamento?`;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${cname}</td>
+        <td>${new Date(inv.due_date+'T00:00:00').toLocaleDateString("pt-BR")}</td>
+        <td>${fmtBRL(inv.amount)}</td>
+        <td>${tag}</td>
+        <td>${paid}</td>
+        <td>${method}</td>
+        <td>
+          <div class="actions">
+            <button class="ok" data-act="pay">Registrar pagamento</button>
+            <button class="secondary" data-act="wa">WhatsApp</button>
+            <button class="warn" data-act="inactive">Inativar cliente</button>
+          </div>
+        </td>
+      `;
+
+      tr.querySelector('[data-act="wa"]').onclick = () => {
+        if (!phone) return alert("Cliente sem telefone cadastrado.");
+        window.open(whatsappLink(phone, msgText), "_blank");
+      };
+
+      tr.querySelector('[data-act="inactive"]').onclick = async () => {
+        if (!confirm("Marcar cliente como INATIVO?")) return;
+        const { error } = await supabase.from("clients").update({ status:"inativo" }).eq("id", inv.client_id);
+        if (error) return setMsg($("invMsg"), "Erro: " + error.message);
+        setMsg($("invMsg"), "Cliente marcado como inativo.");
+        await loadClients();
+        await loadInvoices(false);
+      };
+
+      tr.querySelector('[data-act="pay"]').onclick = async () => {
+        const method = prompt("Forma de pagamento (ex: Pix, Dinheiro, Cartão)","Pix") || "Pix";
+        const paid_at = new Date().toISOString();
+        const { error } = await supabase.from("invoices").update({
+          status:"pago",
+          paid_at,
+          payment_method: method
+        }).eq("id", inv.id);
+        if (error) return setMsg($("invMsg"), "Erro: " + error.message);
+
+        // opcional: lançar no financeiro automaticamente como receita
+        await supabase.from("finance").insert({
+          owner_id: session.user.id,
+          date: todayISO(),
+          type: "receita",
+          category: "mensalidade",
+          description: `Mensalidade ${comp} - ${cname}`,
+          amount: Number(inv.amount||0),
+          client_id: inv.client_id,
+          invoice_id: inv.id
+        });
+
+        setMsg($("invMsg"), "Pagamento registrado + receita lançada no financeiro.");
+        await loadInvoices(false);
+        await loadDashboard();
+      };
+
+      tb.appendChild(tr);
+    }
+
+    setMsg($("invMsg"), `Carregado: ${invs.length} mensalidade(s) em ${comp}.`);
+  }
+
+  // ========= DASHBOARD =========
+  async function loadDashboard(){
+    const comp = currentCompetency();
+    $("competency").textContent = comp;
+
+    // Garante invoices do mês para métricas
+    await ensureInvoicesForMonth(comp);
+
+    const { data: invs, error } = await supabase
+      .from("invoices")
+      .select("id,client_id,competency,due_date,amount,status,paid_at, clients(company_name,phone)")
+      .eq("competency", comp)
+      .order("due_date", { ascending:true });
+
+    if (error) { $("dashNote").textContent = "Erro: " + error.message; return; }
+
+    // Atualiza status automáticos
+    for (const inv of (invs||[])){
+      const auto = statusAuto(inv);
+      if (auto !== inv.status){
+        await supabase.from("invoices").update({ status:auto }).eq("id", inv.id);
+        inv.status = auto;
+      }
+    }
+
+    let received=0, expected=0, open=0, late=0;
+    for (const inv of (invs||[])){
+      expected += Number(inv.amount||0);
+      if (inv.status==="pago") received += Number(inv.amount||0);
+      if (inv.status==="em_aberto") open += Number(inv.amount||0);
+      if (inv.status==="atrasado") late += Number(inv.amount||0);
+    }
+
+    $("kpiReceived").textContent = fmtBRL(received);
+    $("kpiExpected").textContent = fmtBRL(expected);
+    $("kpiOpen").textContent = fmtBRL(open);
+    $("kpiLate").textContent = fmtBRL(late);
+
+    $("dashNote").textContent = `Atualizado: ${new Date().toLocaleString("pt-BR")}.`;
+
+    // Próximos 7 dias
+    const today = todayISO();
+    const d7 = new Date(); d7.setDate(d7.getDate()+7);
+    const d7iso = d7.toISOString().slice(0,10);
+
+    const next = (invs||[]).filter(i => i.status!=="pago" && i.due_date >= today && i.due_date <= d7iso).slice(0,10);
+    $("nextDue").innerHTML = next.length
+      ? next.map(i => {
+          const name = i.clients?.company_name || "Cliente";
+          const date = new Date(i.due_date+'T00:00:00').toLocaleDateString("pt-BR");
+          return `• <b>${name}</b> — vence <b>${date}</b> — ${fmtBRL(i.amount)}`;
+        }).join("<br>")
+      : "<span class='muted'>Nenhum vencimento nos próximos 7 dias.</span>";
+
+    // Em atraso
+    const lateList = (invs||[]).filter(i => i.status==="atrasado").slice(0,10);
+    $("lateList").innerHTML = lateList.length
+      ? lateList.map(i => {
+          const name = i.clients?.company_name || "Cliente";
+          const phone = i.clients?.phone || "";
+          const date = new Date(i.due_date+'T00:00:00').toLocaleDateString("pt-BR");
+          const text = `Olá! Sua mensalidade (${comp}) venceu em ${date} no valor de ${fmtBRL(i.amount)}. Posso te enviar o PIX para pagamento?`;
+          const btn = phone
+            ? ` <a href="${whatsappLink(phone, text)}" target="_blank" style="color:var(--pri2);text-decoration:none">[WhatsApp]</a>`
+            : ` <span class="muted">[sem telefone]</span>`;
+          return `• <b>${name}</b> — venceu <b>${date}</b> — ${fmtBRL(i.amount)}${btn}`;
+        }).join("<br>")
+      : "<span class='muted'>Nenhuma mensalidade em atraso neste mês.</span>";
+  }
+
+  // ========= FINANCEIRO =========
+  $("finDate").value = todayISO();
+
+  $("btnAddFinance").onclick = async () => {
+    const date = $("finDate").value || todayISO();
+    const type = $("finType").value;
+    const category = ($("finCategory").value.trim() || "geral");
+    const description = $("finDesc").value.trim();
+    const amount = Number($("finAmount").value || 0);
+
+    if (!description) return setMsg($("finMsg"), "Informe a descrição (obrigatório).");
+
+    setMsg($("finMsg"), "Salvando...");
+    const { error } = await supabase.from("finance").insert({
+      owner_id: session.user.id,
+      date,
+      type,
+      category,
+      description,
+      amount
+    });
+    if (error) return setMsg($("finMsg"), "Erro: " + error.message);
+
+    $("finDesc").value="";
+    $("finAmount").value="";
+    setMsg($("finMsg"), "OK. Lançamento adicionado.");
+    await loadFinance();
+  };
+
+  $("btnLoadFinance").onclick = () => loadFinance();
+
+  async function loadFinance(){
+    const comp = currentCompetency();
+    const p = parseCompetency(comp);
+    const monthStart = `${p.y}-${String(p.m).padStart(2,"0")}-01`;
+    const monthEnd = new Date(p.y, p.m, 0); // last day
+    const monthEndISO = `${p.y}-${String(p.m).padStart(2,"0")}-${String(monthEnd.getDate()).padStart(2,"0")}`;
+
+    const { data, error } = await supabase
+      .from("finance")
+      .select("id,date,type,category,description,amount,created_at")
+      .gte("date", monthStart)
+      .lte("date", monthEndISO)
+      .order("date", { ascending:false });
+
+    if (error) { setMsg($("finMsg"), "Erro: " + error.message); return; }
+
+    let inc=0, out=0;
+    for (const f of (data||[])){
+      if (f.type==="receita") inc += Number(f.amount||0);
+      else out += Number(f.amount||0);
+    }
+    $("finKpiIn").textContent = fmtBRL(inc);
+    $("finKpiOut").textContent = fmtBRL(out);
+    $("finKpiNet").textContent = fmtBRL(inc - out);
+
+    const tb = $("finTbody");
+    tb.innerHTML = "";
+    for (const f of (data||[])){
+      const tag = f.type==="receita"
+        ? `<span class="tag ok">Receita</span>`
+        : `<span class="tag danger">Despesa</span>`;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${new Date(f.date+'T00:00:00').toLocaleDateString("pt-BR")}</td>
+        <td>${tag}</td>
+        <td>${f.category}</td>
+        <td>${f.description}</td>
+        <td>${fmtBRL(f.amount)}</td>
+        <td><div class="actions"><button class="danger" data-act="del">Excluir</button></div></td>
+      `;
+      tr.querySelector('[data-act="del"]').onclick = async () => {
+        if (!confirm("Excluir lançamento?")) return;
+        const { error } = await supabase.from("finance").delete().eq("id", f.id);
+        if (error) return setMsg($("finMsg"), "Erro: " + error.message);
+        setMsg($("finMsg"), "Excluído.");
+        await loadFinance();
+      };
+      tb.appendChild(tr);
+    }
+
+    setMsg($("finMsg"), `Mês ${comp}: ${data?.length||0} lançamento(s).`);
+  }
+
+  // ========= AGENDA =========
+  $("agDate").value = todayISO();
+
+  $("btnAddAgenda").onclick = async () => {
+    const date = $("agDate").value || todayISO();
+    const time = $("agTime").value.trim() || null;
+    const title = $("agTitle").value.trim();
+    const priority = $("agPriority").value;
+    const type = $("agType").value.trim() || "geral";
+    const notes = $("agNotes").value.trim() || null;
+
+    if (!title) return setMsg($("agMsg"), "Informe o título (obrigatório).");
+
+    setMsg($("agMsg"), "Salvando...");
+    const { error } = await supabase.from("agenda").insert({
+      owner_id: session.user.id,
+      date, time, title, priority, type, notes
+    });
+    if (error) return setMsg($("agMsg"), "Erro: " + error.message);
+
+    $("agTime").value="";
+    $("agTitle").value="";
+    $("agType").value="";
+    $("agNotes").value="";
+    setMsg($("agMsg"), "OK. Item adicionado.");
+    await loadAgenda();
+  };
+
+  $("btnLoadAgenda").onclick = () => loadAgenda();
+
+  async function loadAgenda(){
+    const { data, error } = await supabase
+      .from("agenda")
+      .select("id,date,time,title,priority,type,status,notes,created_at")
+      .order("date", { ascending:true });
+
+    if (error) { setMsg($("agMsg"), "Erro: " + error.message); return; }
+
+    const tb = $("agTbody");
+    tb.innerHTML = "";
+    for (const a of (data||[])){
+      const pr = a.priority==="alta" ? "danger" : a.priority==="media" ? "warn" : "ok";
+      const tagPr = `<span class="tag ${pr}">${a.priority}</span>`;
+      const tagSt = a.status==="feito" ? `<span class="tag ok">feito</span>` : `<span class="tag warn">pendente</span>`;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${new Date(a.date+'T00:00:00').toLocaleDateString("pt-BR")}</td>
+        <td>${a.time||"-"}</td>
+        <td>${a.title}</td>
+        <td>${tagPr}</td>
+        <td>${a.type}</td>
+        <td>${tagSt}</td>
+        <td>
+          <div class="actions">
+            <button class="secondary" data-act="toggle">${a.status==="feito"?"Marcar pendente":"Marcar feito"}</button>
+            <button class="danger" data-act="del">Excluir</button>
+          </div>
+        </td>
+      `;
+      tr.querySelector('[data-act="toggle"]').onclick = async () => {
+        const newStatus = a.status==="feito" ? "pendente" : "feito";
+        const { error } = await supabase.from("agenda").update({ status:newStatus }).eq("id", a.id);
+        if (error) return setMsg($("agMsg"), "Erro: " + error.message);
+        await loadAgenda();
+      };
+      tr.querySelector('[data-act="del"]').onclick = async () => {
+        if (!confirm("Excluir item da agenda?")) return;
+        const { error } = await supabase.from("agenda").delete().eq("id", a.id);
+        if (error) return setMsg($("agMsg"), "Erro: " + error.message);
+        await loadAgenda();
+      };
+      tb.appendChild(tr);
+    }
+    setMsg($("agMsg"), `Total: ${data?.length||0} item(ns).`);
+  }
+
+  // ========= PROJETOS =========
+  async function loadClientsToProjectSelect(){
+    const { data, error } = await supabase.from("clients").select("id,company_name").order("company_name",{ascending:true});
+    if (error) { setMsg($("prMsg"), "Erro clientes: " + error.message); return; }
+    const sel = $("prClient");
+    sel.innerHTML = `<option value="">(Sem cliente)</option>`;
+    for (const c of (data||[])){
+      const op = document.createElement("option");
+      op.value = c.id;
+      op.textContent = c.company_name;
+      sel.appendChild(op);
+    }
+  }
+
+  $("btnAddProject").onclick = async () => {
+    const name = $("prName").value.trim();
+    if (!name) return setMsg($("prMsg"), "Informe nome do projeto (obrigatório).");
+    const value = Number($("prValue").value || 0);
+    const deadline = $("prDeadline").value || null;
+    const status = $("prStatus").value;
+    const client_id = $("prClient").value || null;
+    const description = $("prDesc").value.trim() || null;
+
+    setMsg($("prMsg"), "Salvando...");
+    const { error } = await supabase.from("projects").insert({
+      owner_id: session.user.id, client_id, name, value, deadline, status, description
+    });
+    if (error) return setMsg($("prMsg"), "Erro: " + error.message);
+
+    $("prName").value="";
+    $("prValue").value="";
+    $("prDeadline").value="";
+    $("prDesc").value="";
+    setMsg($("prMsg"), "OK. Projeto adicionado.");
+    await loadProjects();
+  };
+
+  $("btnLoadProjects").onclick = () => loadProjects();
+
+  async function loadProjects(){
+    const { data, error } = await supabase
+      .from("projects")
+      .select("id,client_id,name,value,deadline,status,description, clients(company_name)")
+      .order("created_at", { ascending:false });
+
+    if (error) { setMsg($("prMsg"), "Erro: " + error.message); return; }
+
+    const tb = $("prTbody");
+    tb.innerHTML = "";
+    for (const p of (data||[])){
+      const client = p.clients?.company_name || "-";
+      const dl = p.deadline ? new Date(p.deadline+'T00:00:00').toLocaleDateString("pt-BR") : "-";
+      const stMap = {
+        proposta:"warn", em_andamento:"ok", em_validacao:"warn",
+        entregue:"ok", pausado:"danger", cancelado:"danger"
+      };
+      const stCls = stMap[p.status] || "warn";
+      const tag = `<span class="tag ${stCls}">${p.status}</span>`;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.name}</td>
+        <td>${client}</td>
+        <td>${fmtBRL(p.value)}</td>
+        <td>${dl}</td>
+        <td>${tag}</td>
+        <td><div class="actions"><button class="danger" data-act="del">Excluir</button></div></td>
+      `;
+      tr.querySelector('[data-act="del"]').onclick = async () => {
+        if (!confirm("Excluir projeto?")) return;
+        const { error } = await supabase.from("projects").delete().eq("id", p.id);
+        if (error) return setMsg($("prMsg"), "Erro: " + error.message);
+        await loadProjects();
+      };
+      tb.appendChild(tr);
+    }
+    setMsg($("prMsg"), `Total: ${data?.length||0} projeto(s).`);
+  }
+
+  // ========= Inicial =========
+  showView("dashboard");
+</script>
+</body>
+</html>
